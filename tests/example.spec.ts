@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-
 const url = 'https://saucedemo.com'
 const username = 'standard_user'
 const password = 'secret_sauce'
@@ -47,7 +46,6 @@ test('add empty data ', async ({ page }) => {
   await page.locator('#login-button').click();
 
   await expect(page.getByText('Epic sadface: Username is required')).toBeVisible();
-
 });
 
 test('add to cart button ', async ({ page }) => {
