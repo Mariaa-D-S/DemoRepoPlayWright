@@ -22,6 +22,7 @@ export default class LoginPage {
   }
 
   public async login(){
+    await this.goto();
     await this.assertTitle();
     await this.loginDetails.addData();
     await this.loginActions.clickLogin();
