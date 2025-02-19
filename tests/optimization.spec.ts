@@ -156,6 +156,7 @@ test('checkout finish optimization', async ({ page }) => {
   await checkOutStepOne.checkoutData();
   await checkOutStepTwo.finish();
   await expect(page).toHaveURL(/.*checkout-complete.html/);
+  //await page.waitForURL(/.*checkout-complete.html/);
 });
 
 test('back home after finished checkout', async ({ page }) => {
