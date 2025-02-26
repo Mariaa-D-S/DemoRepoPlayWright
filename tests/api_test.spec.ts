@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import { request } from 'http';
+import { parse } from 'path';
 
 test('API GET test', async ({request}) => {
 
@@ -73,5 +74,43 @@ test('API DELETE test', async ({request}) => {
     const response = await request.delete('https://reqres.in/api/users/2')
 
     expect(response.status()).toBe(204)
+
+})
+
+test('Intercept API POST', async ({page, request}) => {
+
+    const response = await request.post('https://reqres.in/api/users',{
+        data: {
+            "name": "vasil",
+            "job": "leader"
+        }
+    })
+    const json = await response.json();
+
+    await page.route('https://reqres.in/api/users', async route => {
+        await route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id:101,
+            name: 'Intercepted user',
+            job: 'QA nqkuv',
+            createdAt: new Date().toISOString()
+          })
+        });
+      });
+
+    console.log(json)
+    const modifiedResponse = await page.evaluate(async () => {
+        const res = await fetch('https://reqres.in/api/users', {
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({name : 'Vasil madinka', job: 'Developer'})
+        });
+        return res.json()
+    })
+
+    console.log('Modified Response: '  + modifiedResponse)
+    expect(modifiedResponse.name).toBe('Intercepted user');
 
 })
